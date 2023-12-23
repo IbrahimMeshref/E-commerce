@@ -7,6 +7,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:shoe/screen/Categories/category.dart';
 import 'package:shoe/screen/Categories/cubit/category_cubit.dart';
+import 'package:shoe/screen/cart/cubit/getcart_cubit.dart';
 import 'package:shoe/screen/dblocalcart/hivo.dart';
 import 'package:shoe/screen/dblocallog/hivo.dart';
 import 'package:shoe/screen/diohelper/diohelper.dart';
@@ -62,6 +63,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProductCubit()..getproduct(),
+        ),
+        BlocProvider(
+          create: (context) => GetcartCubit()..getcart(),
         ),
       ],
       child: GetMaterialApp(

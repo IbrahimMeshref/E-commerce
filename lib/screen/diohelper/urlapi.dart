@@ -7,6 +7,7 @@ class ApiUrl{
   static const category = "categories";
   static String product = "categories/${Datasend.idcategory}";
   static const profile="profile";
+  static const cart="carts";
   static String message='';
   static String messageup='';
   static List<Map<String,String>>pro=[
