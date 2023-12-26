@@ -50,7 +50,25 @@ class DioHelper {
 
     return response;
   }
+  Future<Response> putData({
+    required String path,
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParams,
+  }) async {
+    final response =
+    await dio!.put(path, data: body, queryParameters: queryParams);
+    return response;
+  }
+  Future<Response> deleteData({
+    required String path,
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParams,
+  }) async {
+    final response =
+    await dio!.delete(path, data: body, queryParameters: queryParams);
 
+    return response;
+  }
 /// Put
 /// Patch
 }

@@ -29,6 +29,7 @@ class _CategoryState extends State<Category> {
     CategoryCubit().getcategory();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -109,7 +110,8 @@ class _CategoryState extends State<Category> {
                                                 Center(
                                                     child:
                                                         CircularProgressIndicator(
-                                              color: Color.fromARGB(255, 74, 84, 176),
+                                              color: Color.fromARGB(
+                                                  255, 74, 84, 176),
                                             )),
                                             errorWidget:
                                                 (context, url, error) =>
@@ -127,12 +129,12 @@ class _CategoryState extends State<Category> {
                                     ),
                                   ),
                                 ),
-                                onTap: ()  {
-
+                                onTap: () {
                                   Datasend.idcategory = images[index].id;
                                   Datasend.namecategory = images[index].name;
 
-                                  ApiUrl.product = 'categories/${images[index].id}';
+                                  ApiUrl.product =
+                                      'categories/${images[index].id}';
 
                                   Get.to(Product());
                                 },
@@ -154,94 +156,3 @@ class _CategoryState extends State<Category> {
         ));
   }
 }
-
-/*
-
-import 'dart:ffi';
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shoe/screen/Categories/cubit/category_cubit.dart';
-import 'package:shoe/screen/Categories/model/CategoryModel.dart';
-
-class Category extends StatefulWidget {
-  const Category({super.key});
-
-  @override
-  State<Category> createState() => _CategoryState();
-}
-
-class _CategoryState extends State<Category> {
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: BlocBuilder<CategoryCubit, CategoryState>(
-  builder: (context, state) {
-    if (state is CategoryLoading)
-      {
-        return Center(child: SingleChildScrollView());
-      }
-   else if(state is CategorySucess){
-      List<CategoryData>? images=context.read<CategoryCubit>().categoryModel.data?.data;
-
-     print(images![0].name);
-
-    return
-      ListView.builder(itemBuilder:
-      (context, index) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          SizedBox(height: height*0.06,),
-          Container(
-            height: height*0.11,
-            width: width*0.9,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xffF4F4F4),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  CircleAvatar(
-
-                    child: Image.network(''),
-                    radius: 30,
-                  ),
-                  SizedBox(width: width*0.05,),
-                  Text('hello',style: TextStyle(
-                      fontSize: 20
-                  ),),
-                ],
-              ),
-            ),
-          )
-
-        ],
-      );
-      return null;
-      },
-        itemCount: 4,
-
-    );
-    }
-   else{
-     return SizedBox.shrink();
-    }
-  },
-),
-      ),
-    );
-  }
-}
-
- */

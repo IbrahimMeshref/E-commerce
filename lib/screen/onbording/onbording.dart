@@ -23,7 +23,6 @@ class _OnbordingState extends State<Onbording> {
     _controller = PageController(initialPage: 0);
     super.initState();
   }
-
   @override
   void dispose() {
     // TODO: implement dispose

@@ -301,13 +301,18 @@ class _NhomeScreenState extends State<NhomeScreen> {
                       ),
                     ],
                     onTap: (index) {
-
-                      if(index==2)  {  Get.to((Carts()));}
-                      if(index==3) {Get.to((Category()));}
-                      if(index==4) {Get.to((Profile()));}
+                      if (index == 2) {
+                        Get.to((Carts()));
+                      }
+                      if (index == 3) {
+                        Get.to((Category()));
+                      }
+                      if (index == 4) {
+                        Get.to((Profile()));
+                      }
                       setState(() {
                         iconColor = Color.fromARGB(255, 74, 84, 176);
-                      });// Handle button tap
+                      }); // Handle button tap
                     },
                   ),
                 ))));
@@ -325,15 +330,34 @@ Widget buildMenu(BuildContext context) => SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  //backgroundColor: Colors.white,
-                  radius: 60.0,
-                  backgroundImage: NetworkImage(picture1),
+                CachedNetworkImage(
+                  imageUrl: picture1,
+                  //width: 2,
+                  // width: width * 0.2,
+                  width: 150,
+                  height: 130,
+                  placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 74, 84, 176),
+                  )),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 SizedBox(height: 20.0),
-                Text(
-                  "Hey, ${ApiUrl.pro[0]['name']}",
-                  style: TextStyle(color: Colors.white, fontSize: 17),
+                BlocBuilder<ProfileCubit, ProfileState>(
+                  builder: (context, state) {
+                    if (state is ProfileLoading)
+                      {
+                        return  Center(
+                            child: CircularProgressIndicator(
+                              color: Color.fromARGB(255, 74, 84, 176),
+                            ));
+                      }
+                   String? name= context.read<ProfileCubit>().profileModel.data?.name;
+                    return Text(
+                      "Hey, ${name}",
+                      style: TextStyle(color: Colors.white, fontSize: 17),
+                    );
+                  },
                 ),
                 SizedBox(height: 50.0),
               ],
@@ -361,8 +385,8 @@ Widget buildMenu(BuildContext context) => SingleChildScrollView(
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => Category()));
             },
-            leading: const Icon(Icons.category,
-                size: 30.0, color: Colors.white),
+            leading:
+                const Icon(Icons.category, size: 30.0, color: Colors.white),
             title: const Text(
               "Category",
               style: TextStyle(color: Colors.white, fontSize: 17),
@@ -423,8 +447,8 @@ Widget buildMenu(BuildContext context) => SingleChildScrollView(
           ListTile(
             onTap: () {
               StoragedataLogin.cleartoken();
+
               Get.offAll(LoginScreen());
-              ApiUrl.pro.clear();
             },
             leading: const Icon(Icons.logout, size: 20.0, color: Colors.white),
             title: const Text(

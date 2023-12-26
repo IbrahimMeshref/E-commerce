@@ -7,8 +7,10 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:shoe/screen/Categories/category.dart';
 import 'package:shoe/screen/Categories/cubit/category_cubit.dart';
-import 'package:shoe/screen/cart/cubit/getcart_cubit.dart';
-import 'package:shoe/screen/dblocalcart/hivo.dart';
+import 'package:shoe/screen/cart/cubitaddcart/addcart_cubit.dart';
+import 'package:shoe/screen/cart/cubitdeletecart/deletecart_cubit.dart';
+import 'package:shoe/screen/cart/cubitgetcaet/getcart_cubit.dart';
+import 'package:shoe/screen/cart/cubitupdatecaet/updatecart_cubit.dart';
 import 'package:shoe/screen/dblocallog/hivo.dart';
 import 'package:shoe/screen/diohelper/diohelper.dart';
 import 'package:shoe/screen/login/cubit/login_cubit.dart';
@@ -20,7 +22,6 @@ import 'package:shoe/screen/profile/cubit/profile_cubit.dart';
 import 'package:shoe/screen/signup/cubit/sign_up_cubit.dart';
 import 'package:shoe/screen/splach/splach.dart';
 
-import 'screen/home/homescreen.dart';
 
 Future<void> main() async {
 /*  WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,6 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);*/
   await Hive.initFlutter();
   var box = await Hive.openBox(StoragedataLogin.login);
-  var box2 = await Hive.openBox(StoragedataCart.cartt);
   DioHelper.init();
   //WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -66,6 +66,15 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => GetcartCubit()..getcart(),
+        ),
+        BlocProvider(
+          create: (context) => AddcartCubit(),
+        ),
+        BlocProvider(
+          create: (context) => UpdatecartCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DeletecartCubit(),
         ),
       ],
       child: GetMaterialApp(

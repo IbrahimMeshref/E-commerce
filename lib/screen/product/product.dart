@@ -136,6 +136,8 @@ class _ProductState extends State<Product> {
                           ),
                           onTap: () {
                             Datasend.idproduct=index;
+                            Datasend.idddproduct=dproduct?[index].id as int;
+
                             Get.to(DetailsProduct());
                           },
                         );

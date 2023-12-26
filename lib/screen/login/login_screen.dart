@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return Stack(
             children: [
               Scaffold(
-                appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+               // appBar: AppBar(backgroundColor: Colors.transparent, elevation: 3),
                 backgroundColor: Colors.white,
                 body: SingleChildScrollView(
                   child: Container(
@@ -178,6 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             context.read<LoginCubit>().login(
                                 mail: _emailController.text,
                                 password: _passwordController.text);
+
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color.fromARGB(255, 74, 84, 176),

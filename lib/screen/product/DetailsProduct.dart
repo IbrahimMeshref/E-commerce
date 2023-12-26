@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:shoe/screen/product/cubit/product_cubit.dart';
 import 'package:shoe/screen/product/model/Productmodel.dart';
-import 'package:shoe/screen/testscreen.dart';
 
+import '../cart/cubitaddcart/addcart_cubit.dart';
 import '../cart/mycart.dart';
 import '../diohelper/urlapi.dart';
 
@@ -35,7 +35,7 @@ class _DetailsProductState extends State<DetailsProduct> {
             ),
             CircleAvatar(
               backgroundColor: Color(0xffF4F4F4),
-             radius: 22,
+              radius: 22,
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -60,31 +60,30 @@ class _DetailsProductState extends State<DetailsProduct> {
             ),
           ),
         ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => Carts(),
-                    ),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 22,
-
-                  child: Image.asset(
-                    'assets/images/bag-2.png',
-                    width: 44,
-                    height: 44,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Carts(),
                   ),
-                  backgroundColor: Color(0xffF4F4F4),
+                );
+              },
+              child: CircleAvatar(
+                radius: 22,
+                child: Image.asset(
+                  'assets/images/bag-2.png',
+                  width: 44,
+                  height: 44,
                 ),
+                backgroundColor: Color(0xffF4F4F4),
               ),
             ),
-          ],
+          ),
+        ],
         toolbarHeight: 90,
 
         //set your height
@@ -114,8 +113,10 @@ class _DetailsProductState extends State<DetailsProduct> {
                     List<ProductData>? dproduct = [];
                     dproduct =
                         context.read<ProductCubit>().productmodel.data?.data;
+                    List<String>? images=dproduct?[Datasend.idproduct as int].images;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+
                       children: [
                         Text(
                           '${dproduct?[Datasend.idproduct as int].name}',
@@ -164,6 +165,36 @@ class _DetailsProductState extends State<DetailsProduct> {
                         SizedBox(
                           height: height * 0.02,
                         ),
+                        SizedBox(
+
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: height * 0.15, width: width * 0.35,
+                                //color: Colors.pink,
+                                margin: EdgeInsets.all(10),
+                                 child: CachedNetworkImage(
+                                   imageUrl:
+                                   '${images?[index]}',
+                                   fit: BoxFit.fill,
+                                   //width: width * 0.4,
+                                   height: height * 0.2,
+                                   placeholder: (context, url) => Center(
+                                       child: CircularProgressIndicator(
+                                         color: Color.fromARGB(255, 74, 84, 176),
+                                       )),
+                                   errorWidget: (context, url, error) =>
+                                       Icon(Icons.error),
+                                 ),
+                              );
+                            },
+                            itemCount: images?.length,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+
+                          ),
+                          height: height*0.2,
+                        ),
                         Text(
                           'Highlights',
                           style: TextStyle(
@@ -193,23 +224,23 @@ class _DetailsProductState extends State<DetailsProduct> {
       ),
       bottomNavigationBar: Container(
         height: height * 0.1,
-
         decoration: BoxDecoration(
             //color: Color(0xff90A8BE),
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30) )
-          // border: Border(
-          //   top: BorderSide(
-          //     color: Colors.indigo,
-          //     width: 1,
-          //   ),
-          // ),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30))
+            // border: Border(
+            //   top: BorderSide(
+            //     color: Colors.indigo,
+            //     width: 1,
+            //   ),
+            // ),
 
-
-
-        ),
+            ),
         child: Row(
           children: [
-            SizedBox(width: width*0.05,),
+            SizedBox(
+              width: width * 0.05,
+            ),
             CircleAvatar(
               backgroundColor: Color.fromARGB(255, 74, 84, 176),
               radius: 25,
@@ -218,34 +249,48 @@ class _DetailsProductState extends State<DetailsProduct> {
                 icon: Icon(
                   Icons.favorite_border,
                   size: 30,
-                  color:Colors.white ,
+                  color: Colors.white,
                 ),
               ),
             ),
-            SizedBox(width: width*0.1,),
-            ElevatedButton(onPressed: () {},
-              child: Text('Add to Cart',
-              style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w800
-              ),
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // <-- Radius
-                ),
-                primary: Color.fromARGB(255, 74, 84, 176),
-                onPrimary:Colors.white ,
-                minimumSize: Size(width*0.7, height*0.06),
-                textStyle:  TextStyle(
+            SizedBox(
+              width: width * 0.1,
+            ),
+            BlocBuilder<AddcartCubit, AddcartState>(
+              builder: (context, state) {
+                if (state is AddcartLoading) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 74, 84, 176),
+                  ));
+                }
 
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontStyle: FontStyle.normal),
-              ),
-
-
-          )],
+                return ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<AddcartCubit>()
+                        .addcart(idnumber: Datasend.idddproduct as int);
+                  },
+                  child: Text(
+                    'Add to Cart',
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // <-- Radius
+                    ),
+                    primary: Color.fromARGB(255, 74, 84, 176),
+                    onPrimary: Colors.white,
+                    minimumSize: Size(width * 0.7, height * 0.06),
+                    textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontStyle: FontStyle.normal),
+                  ),
+                );
+              },
+            )
+          ],
         ),
       ),
     );

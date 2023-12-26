@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../dblocallog/hivo.dart';
-import '../home/homescreen.dart';
 import '../nhome/nhomescreen.dart';
 import '../onbording/onbording.dart';
 import '../profile/cubit/profile_cubit.dart';
