@@ -11,7 +11,7 @@ import 'cubitgetcaet/getcart_cubit.dart';
 import 'model/ShowCartModel.dart';
 
 const List<String> list = <String>['1', '2', '3', '4', '5', '6', '7'];
-
+double delivery=60.0;
 class Carts extends StatefulWidget {
   const Carts({Key? key}) : super(key: key);
 
@@ -268,6 +268,7 @@ class _CartsState extends State<Carts> {
             ));
           } else if (state is GetcartSucess) {
             var h = context.read<GetcartCubit>().showCartModel.data;
+            if(h?.subTotal==0) delivery=0.0;
             return Container(
               height: height * 0.31,
               color: Colors.white,
@@ -306,7 +307,7 @@ class _CartsState extends State<Carts> {
                         ),
                         Spacer(),
                         Text(
-                          '\$60',
+                         'EGP $delivery',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 17,
@@ -333,7 +334,7 @@ class _CartsState extends State<Carts> {
                         ),
                         Spacer(),
                         Text(
-                          'EGP ${(h?.total?.toDouble())! + 60.0}',
+                          'EGP ${(h?.total?.toDouble())! + delivery}',
                           style: TextStyle(
                             color: Color.fromARGB(255, 74, 84, 176),
                             fontSize: 19,

@@ -124,6 +124,7 @@ class _NhomeScreenState extends State<NhomeScreen> {
                               ),
                               onTap: () {
                                 toggleMenu();
+                                context.read<ProfileCubit>().profile();
                                 setState(() {});
                               });
                         },
@@ -349,7 +350,7 @@ Widget buildMenu(BuildContext context) => SingleChildScrollView(
                       {
                         return  Center(
                             child: CircularProgressIndicator(
-                              color: Color.fromARGB(255, 74, 84, 176),
+                              color: Colors.white,
                             ));
                       }
                    String? name= context.read<ProfileCubit>().profileModel.data?.name;
