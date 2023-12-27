@@ -22,6 +22,8 @@ class _ProductState extends State<Product> {
   @override
   void initState() {
     context.read<ProductCubit>().getproduct();
+    context.read<ProductCubit>().getproduct();
+
     super.initState();
   }
 
@@ -31,7 +33,7 @@ class _ProductState extends State<Product> {
     double height = MediaQuery.of(context).size.height;
     Color colorc1 = Colors.white;
     Color color2 = Colors.black;
-
+    bool pp=true;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -81,7 +83,7 @@ class _ProductState extends State<Product> {
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15),
                       itemCount: dproduct?.length,
-                      itemBuilder: (BuildContext ctx, index) {
+                      itemBuilder: (BuildContext context, index) {
                         return InkWell(
                           child: Container(
                             alignment: Alignment.center,
@@ -144,12 +146,19 @@ class _ProductState extends State<Product> {
                                     ],
                                   ),
                                   BlocBuilder<AddcartCubit, AddcartState>(
-                                    builder: (context2, state2) {
-                                      if(state2 is AddcartLoading || state2 is ProductLoading ){
+                                    builder: (context, state) {
+                                      if(state is AddcartLoading  ){
+                                        pp=false;
                                         return Center(
                                             child: CircularProgressIndicator(
                                               color: Color.fromARGB(255, 74, 84, 176),
                                             ));
+                                      }
+                                      if(state is AddcartSucces&&pp==false){
+                                        context
+                                            .read<ProductCubit>()
+                                            .getproduct();
+                                        pp=true;
                                       }
                                       return Column(
                                         children: [
@@ -173,25 +182,22 @@ class _ProductState extends State<Product> {
                                                 top: height * 0.33),
                                             child: CircleAvatar(
                                               backgroundColor:
-                                                  dproduct?[index].inCart ==
+                                                  dproduct?[index]. inCart==
                                                           true
                                                       ? Color.fromARGB(
                                                           255, 74, 84, 176)
                                                       : Colors.white,
                                               child: IconButton(
                                                   onPressed: () {
+
                                                     context
-                                                        .read<ProductCubit>()
-                                                        .getproduct();
-                                                    context2
                                                         .read<AddcartCubit>()
                                                         .addcart(
                                                             idnumber:
                                                                 dproduct?[index]
                                                                     .id as int);
-                                                    context
-                                                        .read<ProductCubit>()
-                                                        .getproduct();
+                                                  //  dproduct?.clear();
+
 
                                                   },
                                                   icon: Icon(

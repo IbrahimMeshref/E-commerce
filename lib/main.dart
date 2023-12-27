@@ -15,6 +15,7 @@ import 'package:shoe/screen/dblocallog/hivo.dart';
 import 'package:shoe/screen/diohelper/diohelper.dart';
 import 'package:shoe/screen/login/cubit/login_cubit.dart';
 import 'package:shoe/screen/nhome/cubit/banner_cubit.dart';
+import 'package:shoe/screen/nhome/cubithome/home_cubit.dart';
 import 'package:shoe/screen/nhome/nhomescreen.dart';
 import 'package:shoe/screen/product/cubit/product_cubit.dart';
 import 'package:shoe/screen/product/product.dart';
@@ -75,6 +76,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DeletecartCubit(),
+        ),
+        BlocProvider(
+          create: (context) => HomeCubit()..home(),
         ),
       ],
       child: GetMaterialApp(

@@ -16,9 +16,11 @@ class ProductCubit extends Cubit<ProductState> {
   void getproduct() async {
     emit(ProductLoading());
     try {
+      DioHelper.init();
       final response = await _dioHelper.getData(
         path: ApiUrl.product,
       );
+      print(ApiUrl.product);
       productmodel = Productmodel.fromJson(response.data);
       if (productmodel.status == true) {
 

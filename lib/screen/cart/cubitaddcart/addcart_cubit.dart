@@ -21,12 +21,14 @@ class AddcartCubit extends Cubit<AddcartState> {
           .postData(path: ApiUrl.cart, body: {"product_id": idnumber});
       postCartModel = PostCartModel.fromJson(response.data);
       if (postCartModel.status == true) {
-        emit(AddcartSucces());
+
         Fluttertoast.showToast(msg: '${postCartModel.message}',
           backgroundColor: Colors.pink,
           fontSize: 18,
 
         );
+        emit(AddcartSucces());
+
       } else {
         emit(AddcartError());
         ApiUrl.messageup = postCartModel.message ?? "";

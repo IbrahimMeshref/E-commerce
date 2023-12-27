@@ -34,17 +34,10 @@ class LoginCubit extends Cubit<LoginState> {
        DioHelper.headers['Authorization']=loginModel.data?.token??""; String token =StoragedataLogin.gettoken();
         DioHelper.headers['Authorization']=token;
         final response2 = await _dioHelper.getData(path: ApiUrl.profile);
-        print('66666666666666666666666666666666lllloginnnnnnnn');
         print(response.data.toString());
         profileModel=ProfileModel.fromJson(response.data);
         print(profileModel.data?.phone);
-       /* ApiUrl.pro.clear();
-        ApiUrl.pro.add( {
-           await 'name':profileModel.data!.name.toString(),
-         await 'email':profileModel.data!.email.toString(),
-         await 'phone':profileModel.data!.phone.toString(),
-         await 'image':profileModel.data!.image.toString(),
-        });*/
+
         Get.offAll(NhomeScreen());
         emit(LoginSucess());
       }
