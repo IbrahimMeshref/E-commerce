@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoe/screen/cart/cubitdeletecart/deletecart_cubit.dart';
 import 'package:shoe/screen/cart/cubitupdatecaet/updatecart_cubit.dart';
+import 'package:shoe/screen/nhome/cubithome/home_cubit.dart';
 import '../diohelper/diohelper.dart';
 
+import '../product/cubit/product_cubit.dart';
 import 'cubitgetcaet/getcart_cubit.dart';
 import 'model/ShowCartModel.dart';
 
@@ -23,7 +25,7 @@ class _CartsState extends State<Carts> {
   @override
   void initState() {
     context.read<GetcartCubit>().getcart();
-    super.initState();
+
   }
 
   String dropdownValue = list.first;
@@ -49,6 +51,13 @@ class _CartsState extends State<Carts> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
+                context
+                    .read<ProductCubit>()
+                    .getproduct();
+                context
+                    .read<HomeCubit>()
+                    .home();
+                super.initState();
                 setState(() {});
               },
               child: CircleAvatar(

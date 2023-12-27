@@ -15,6 +15,7 @@ import 'package:shrink_sidemenu/shrink_sidemenu.dart';
 import 'package:stylish_bottom_bar/helpers/constant.dart';
 
 import '../Categories/category.dart';
+import '../cart/cubitgetcaet/getcart_cubit.dart';
 import '../cart/mycart.dart';
 import '../const.dart';
 import '../dblocallog/hivo.dart';
@@ -143,10 +144,13 @@ bool gg=true;
                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                           child: InkWell(
                             onTap: () {
+                              context.read<GetcartCubit>().getcart();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => Carts(),
+
+
                                 ),
                               );
                             },
