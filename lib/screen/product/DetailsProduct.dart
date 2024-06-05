@@ -276,11 +276,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                     style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
                   ),
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
+                    foregroundColor: Colors.white, backgroundColor: Color.fromARGB(255, 74, 84, 176), shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12), // <-- Radius
                     ),
-                    primary: Color.fromARGB(255, 74, 84, 176),
-                    onPrimary: Colors.white,
                     minimumSize: Size(width * 0.7, height * 0.06),
                     textStyle: TextStyle(
                         color: Colors.white,

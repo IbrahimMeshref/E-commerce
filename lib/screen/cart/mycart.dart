@@ -31,10 +31,13 @@ class _CartsState extends State<Carts> {
   String dropdownValue = list.first;
   int weight = 1;
   double tot = 0.0;
+  num sub=0;
+  num total=0.0;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    int j=-1;int jd=-1;
     return Scaffold(
       backgroundColor: Color.fromRGBO(247, 247, 247, 1),
       appBar: AppBar(
@@ -57,8 +60,7 @@ class _CartsState extends State<Carts> {
                 context
                     .read<HomeCubit>()
                     .home();
-                super.initState();
-                setState(() {});
+
               },
               child: CircleAvatar(
                 child: Icon(
@@ -79,11 +81,16 @@ class _CartsState extends State<Carts> {
                 color: Color.fromARGB(255, 74, 84, 176),
               ));
             } else if (state is GetcartSucess) {
-              List<CartItems>? cartdata =
-                  context.read<GetcartCubit>().showCartModel.data?.cartItems;
+
+
+              var h = context.read<GetcartCubit>().showCartModel.data;
+              total=h!.total!;
+              sub=h.subTotal!;
+              List<CartItems>? cartdata =h.cartItems;
+
               print('**********************${cartdata?.length}');
               return ListView.builder(
-                itemCount: cartdata?.length,
+                itemCount: cartdata!.length,
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {},
@@ -106,7 +113,7 @@ class _CartsState extends State<Carts> {
                                     top: height * 0.00, left: width * 0.04),
                                 child: CachedNetworkImage(
                                   imageUrl:
-                                      '${cartdata?[index].product?.image}',
+                                      '${cartdata[index].product?.image}',
                                   width: width * 0.35,
                                   placeholder: (context, url) => Center(
                                       child: CircularProgressIndicator(
@@ -125,31 +132,46 @@ class _CartsState extends State<Carts> {
                                 children: [
                                   BlocBuilder<UpdatecartCubit, UpdatecartState>(
                                     builder: (context, state) {
-                                      if (state is UpdatecartLoading) {
+                                      if (state is UpdatecartLoading&&j==index) {
+
                                         return Center(
                                             child: CircularProgressIndicator(
                                           color:
                                               Color.fromARGB(255, 74, 84, 176),
                                         ));
                                       }
+                                      else if(state is UpdatecartSucess&&j==index){
+                                        var oo=context.read<UpdatecartCubit>().updateCartModel.data;
+                                        print(index);
+                                        cartdata[index].quantity  =oo?.cart?.quantity;
+
+                                        j=-1;
+                                      }
+
+
                                       return DropdownMenu<String>(
                                         //enabled: false,
                                         width: width * 0.2,
 
                                         onSelected: (String? value) {
+                                          j=index;
                                           context
                                               .read<UpdatecartCubit>()
                                               .updatecart(
-                                                  id: cartdata?[index].id
+                                                  id: cartdata[index].id
                                                       as int,
                                                   quantity: num.parse(
                                                       value.toString()));
-                                          context
+
+
+                                       //   cartdata?[index].quantity  =context.read<UpdatecartCubit>().updateCartModel.data?.cart?.quantity;
+
+                                          /* context
                                               .read<GetcartCubit>()
-                                              .getcart();
+                                              .getcart();*/
                                         },
 
-                                        initialSelection: cartdata?[index]
+                                        initialSelection: cartdata[index]
                                             .quantity
                                             .toString(),
                                         dropdownMenuEntries: list
@@ -165,13 +187,25 @@ class _CartsState extends State<Carts> {
                                     width: width * 0.02,
                                   ),
                                   BlocBuilder<DeletecartCubit, DeletecartState>(
-                                    builder: (Delete, state) {
-                                      if (state is DeletecartLoading) {
+                                    builder: (context, state)  {
+                                      if (state is DeletecartLoading&&jd==index) {
                                         return Center(
                                             child: CircularProgressIndicator(
                                           color:
                                               Color.fromARGB(255, 74, 84, 176),
                                         ));
+                                      }
+                                      else if(state is DeletecartSucces&&jd==index){
+                                        var od=context.read<DeletecartCubit>().deleteCartModel.data;
+
+                                        print(cartdata.length);
+
+
+                                        cartdata.removeAt(index);
+                                        print(cartdata.length);
+
+
+                                        jd=-1;
                                       }
                                       return CircleAvatar(
                                         backgroundColor:
@@ -182,13 +216,14 @@ class _CartsState extends State<Carts> {
                                           icon: Icon(CupertinoIcons.delete,
                                               color: Colors.grey[600]),
                                           onPressed: () {
-                                            context
+                                            /*context
                                                 .read<GetcartCubit>()
-                                                .getcart();
+                                                .getcart();*/
+                                            jd=index;
                                             context
                                                 .read<DeletecartCubit>()
                                                 .deletecart(
-                                                  id: cartdata?[index].id
+                                                  id: cartdata[index].id
                                                       as int,
                                                 );
 
@@ -209,7 +244,7 @@ class _CartsState extends State<Carts> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${cartdata?[index].product?.name}',
+                                  '${cartdata[index].product?.name}',
                                   // softWrap: false,
                                   overflow: TextOverflow.fade,
                                   style: TextStyle(
@@ -234,7 +269,7 @@ class _CartsState extends State<Carts> {
                                     text: TextSpan(children: [
                                   TextSpan(
                                     text:
-                                        'EGP ${(cartdata?[index].product?.oldPrice)?.toDouble()} ',
+                                        'EGP ${(cartdata[index].product?.oldPrice)?.toDouble()} ',
                                     style: TextStyle(
                                         decoration: TextDecoration.lineThrough,
                                         decorationColor: Colors.grey[700],
@@ -245,7 +280,7 @@ class _CartsState extends State<Carts> {
                                   ),
                                   TextSpan(
                                     text:
-                                        ' ${(cartdata?[index].product?.discount)}% OFF',
+                                        ' ${(cartdata[index].product?.discount)}% OFF',
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontSize: 17,
@@ -268,23 +303,26 @@ class _CartsState extends State<Carts> {
           },
         ),
       ),
-      bottomNavigationBar: BlocBuilder<GetcartCubit, GetcartState>(
-        builder: (context, state) {
-          if (state is GetcartLoading) {
-            return Center(
-                child: CircularProgressIndicator(
-              color: Color.fromARGB(255, 74, 84, 176),
-            ));
-          } else if (state is GetcartSucess) {
-            var h = context.read<GetcartCubit>().showCartModel.data;
-            if(h?.subTotal==0) delivery=0.0;
-            return Container(
+      bottomNavigationBar:
+             Container(
               height: height * 0.31,
               color: Colors.white,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: height * 0.02, horizontal: width * 0.04),
-                child: Column(
+                child: BlocBuilder<GetcartCubit, GetcartState>(
+
+  builder: (context, state) {
+
+    return BlocBuilder<UpdatecartCubit, UpdatecartState>(
+
+  builder: (context, state) {
+     if(state is UpdatecartSucess){
+      var oo=context.read<UpdatecartCubit>().updateCartModel.data;
+      total=oo!.total!;
+      sub=oo.subTotal!;
+    }
+    return Column(
                   children: [
                     Row(
                       children: [
@@ -295,7 +333,7 @@ class _CartsState extends State<Carts> {
                         ),
                         Spacer(),
                         Text(
-                          'EGP ${(h?.subTotal)?.toDouble()}',
+                          'EGP ${(sub).toDouble()}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -316,7 +354,7 @@ class _CartsState extends State<Carts> {
                         ),
                         Spacer(),
                         Text(
-                         'EGP $delivery',
+                         'EGP ${sub!=0 ?delivery:0}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 17,
@@ -343,7 +381,7 @@ class _CartsState extends State<Carts> {
                         ),
                         Spacer(),
                         Text(
-                          'EGP ${(h?.total?.toDouble())! + delivery}',
+                          'EGP ${(total.toDouble()) + delivery}',
                           style: TextStyle(
                             color: Color.fromARGB(255, 74, 84, 176),
                             fontSize: 19,
@@ -364,7 +402,7 @@ class _CartsState extends State<Carts> {
                       ),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(width * 0.9, height * 0.06),
-                        backgroundColor: Color.fromARGB(255, 74, 84, 176),
+                        backgroundColor: Color.fromARGB(255, 74, 84, 176),foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               13.0), // Adjust the border radius here
@@ -372,13 +410,16 @@ class _CartsState extends State<Carts> {
                       ),
                     )
                   ],
-                ),
-              ),
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        },
+                );
+  },
+);
+  },
+),
+
+            ),
+
+
+
       ),
     );
   }

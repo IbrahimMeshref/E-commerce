@@ -79,7 +79,8 @@ class _ProductState extends State<Product> {
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: width * 0.7,
                           mainAxisExtent: height * 0.5,
-                          childAspectRatio: 3 / 2,
+                       // crossAxisCount: 2,
+                       //   childAspectRatio: 3 / 2,
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15),
                       itemCount: dproduct?.length,

@@ -1,4 +1,8 @@
 class LoginModel {
+
+  bool? status;
+  String? message;
+  UserData? data;
   LoginModel({
       this.status, 
       this.message, 
@@ -9,9 +13,7 @@ class LoginModel {
     message = json['message'];
     data = json['data'] != null ? UserData.fromJson(json['data']) : null;
   }
-  bool? status;
-  String? message;
-  UserData? data;
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

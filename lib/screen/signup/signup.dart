@@ -251,8 +251,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 74, 84, 176),
-                              onPrimary: Colors.white,
+                              foregroundColor: Colors.white, backgroundColor: Color.fromARGB(255, 74, 84, 176),
                               padding: EdgeInsets.symmetric(vertical: 16.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0),
@@ -560,8 +559,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 74, 84, 176),
-                        onPrimary: Colors.white,
+                        foregroundColor: Colors.white, backgroundColor: Color.fromARGB(255, 74, 84, 176),
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),

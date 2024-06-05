@@ -252,8 +252,7 @@ class _OnbordingState extends State<Onbording> {
                 padding: EdgeInsets.only(top: height * 0.89),
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      onPrimary: Color.fromARGB(255, 74, 84, 176),
+                      foregroundColor: Color.fromARGB(255, 74, 84, 176), backgroundColor: Colors.white,
                       shadowColor: Colors.blue,
                       elevation: 3,
                       shape: RoundedRectangleBorder(
