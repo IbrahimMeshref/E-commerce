@@ -18,6 +18,7 @@ import 'package:shoe/screen/nhome/cubit/banner_cubit.dart';
 import 'package:shoe/screen/nhome/cubithome/home_cubit.dart';
 import 'package:shoe/screen/nhome/nhomescreen.dart';
 import 'package:shoe/screen/product/cubit/product_cubit.dart';
+import 'package:shoe/screen/product/detialscubit/detilas_cubit.dart';
 import 'package:shoe/screen/product/product.dart';
 import 'package:shoe/screen/profile/cubit/profile_cubit.dart';
 import 'package:shoe/screen/signup/cubit/sign_up_cubit.dart';
@@ -79,6 +80,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => HomeCubit()..home(),
+        ),
+        BlocProvider(
+          create: (context) =>  DetilasCubit(),
         ),
       ],
       child: GetMaterialApp(

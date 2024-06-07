@@ -10,7 +10,8 @@ import 'package:shoe/screen/product/cubit/product_cubit.dart';
 import 'package:shoe/screen/product/model/Productmodel.dart';
 
 import '../diohelper/urlapi.dart';
-
+import '../nhome/cubithome/home_cubit.dart';
+bool fffproduct=true;
 class Product extends StatefulWidget {
   const Product({super.key});
 
@@ -22,7 +23,7 @@ class _ProductState extends State<Product> {
   @override
   void initState() {
     context.read<ProductCubit>().getproduct();
-    context.read<ProductCubit>().getproduct();
+
 
     super.initState();
   }
@@ -33,7 +34,7 @@ class _ProductState extends State<Product> {
     double height = MediaQuery.of(context).size.height;
     Color colorc1 = Colors.white;
     Color color2 = Colors.black;
-    bool pp=true;
+    int gc = -1,gd=-1;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -79,8 +80,8 @@ class _ProductState extends State<Product> {
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: width * 0.7,
                           mainAxisExtent: height * 0.5,
-                       // crossAxisCount: 2,
-                       //   childAspectRatio: 3 / 2,
+                          // crossAxisCount: 2,
+                          //   childAspectRatio: 3 / 2,
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15),
                       itemCount: dproduct?.length,
@@ -146,59 +147,100 @@ class _ProductState extends State<Product> {
                                           ])),
                                     ],
                                   ),
-                                  BlocBuilder<AddcartCubit, AddcartState>(
-                                    builder: (context, state) {
-                                      if(state is AddcartLoading  ){
-                                        pp=false;
-                                        return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Color.fromARGB(255, 74, 84, 176),
-                                            ));
-                                      }
-                                      if(state is AddcartSucces&&pp==false){
-                                        context
-                                            .read<ProductCubit>()
-                                            .getproduct();
-                                        pp=true;
-                                      }
-                                      return Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: width * 0.32,
-                                                top: height * 0.01),
-                                            child: CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: IconButton(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                    Icons.favorite_border,
-                                                    color: Colors.black,
-                                                  )),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: width * 0.32,
-                                                top: height * 0.33),
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  dproduct?[index]. inCart==
-                                                          true
-                                                      ? Color.fromARGB(
-                                                          255, 74, 84, 176)
-                                                      : Colors.white,
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: width * 0.32,
+                                            top: height * 0.01),
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          child: IconButton(
+                                              onPressed: () {},
+                                              icon: Icon(
+                                                Icons.favorite_border,
+                                                color: Colors.black,
+                                              )),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: width * 0.32,
+                                            top: height * 0.33),
+                                        child: BlocBuilder<AddcartCubit,
+                                            AddcartState>(
+                                          builder: (context, state) {
+                                            if (state
+                                            is AddcartLoading &&
+                                                gc == index) {
+                                              return Center(
+                                                  child:
+                                                  CircularProgressIndicator(
+                                                    color: Color.fromARGB(
+                                                        255, 74, 84, 176),
+                                                  ));
+                                            }
+                                            if (state
+                                            is AddcartLoading &&
+                                                gd == index) {
+                                              return Center(
+                                                  child:
+                                                  CircularProgressIndicator(
+                                                    color: Color.fromARGB(
+                                                        255, 74, 84, 176),
+                                                  ));
+                                            }
+                                            if (state
+                                            is AddcartSucces &&
+                                                gc == index) {
+                                              dproduct?[index].inCart = true;
+                                              fffproduct=true;
+                                              gc = -1;
+                                            }
+                                            if (state
+                                            is AddcartSucces &&
+                                                gd == index) {
+                                              dproduct?[index].inCart = false;
+                                              fffproduct=false;
+                                              gd = -1;
+                                            }
+                                            return CircleAvatar(
+                                              backgroundColor: dproduct?[
+                                              index]
+                                                  .inCart ==
+                                                  true
+                                                  ? Color.fromARGB(
+                                                  255,
+                                                  74,
+                                                  84,
+                                                  176)
+                                                  : Colors.white,
                                               child: IconButton(
                                                   onPressed: () {
+                                                    if (dproduct?[index]
+                                                        .inCart ==
+                                                        false) {
+                                                      gc=index;
+                                                      context
+                                                          .read<
+                                                          AddcartCubit>()
+                                                          .addcart(
+                                                          idnumber:
+                                                          dproduct?[index].id as int);
+                                                    } else if(dproduct?[index].inCart==true) {
+                                                      gd=index;
+                                                      print('*************${(dproduct?[index].id)}');
+                                                      context
+                                                          .read<
+                                                          AddcartCubit>()
+                                                          .addcart(
+                                                          idnumber:
+                                                          dproduct?[index].id as int);
 
+                                                    }
                                                     context
-                                                        .read<AddcartCubit>()
-                                                        .addcart(
-                                                            idnumber:
-                                                                dproduct?[index]
-                                                                    .id as int);
-                                                  //  dproduct?.clear();
-
+                                                        .read<HomeCubit>()
+                                                        .home();
 
                                                   },
                                                   icon: Icon(
@@ -210,11 +252,11 @@ class _ProductState extends State<Product> {
                                                         ? Colors.white
                                                         : Colors.black,
                                                   )),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 ],
                               ),

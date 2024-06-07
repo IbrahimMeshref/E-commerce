@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoe/screen/cart/cubitaddcart/addcart_cubit.dart';
+import 'package:shoe/screen/cart/cubitdeletecart/deletecart_cubit.dart';
 import 'package:shoe/screen/nhome/cubit/banner_cubit.dart';
 import 'package:shoe/screen/nhome/cubithome/home_cubit.dart';
 import 'package:shoe/screen/nhome/model/BannnerModel.dart';
@@ -21,10 +22,12 @@ import '../const.dart';
 import '../dblocallog/hivo.dart';
 import '../diohelper/urlapi.dart';
 import '../login/login_screen.dart';
+import '../product/DetailsProduct.dart';
 import '../profile/cubit/profile_cubit.dart';
 import '../profile/profil.dart';
+import 'detialsproduct.dart';
 import 'model/HomeModel.dart';
-
+bool fffcart=true;
 class NhomeScreen extends StatefulWidget {
   const NhomeScreen({super.key});
 
@@ -39,6 +42,7 @@ class _NhomeScreenState extends State<NhomeScreen> {
     context.read<HomeCubit>().home();
     super.initState();
   }
+
   bool isOpened = false;
   final GlobalKey<SideMenuState> _sideMenuKey = GlobalKey<SideMenuState>();
   final GlobalKey<SideMenuState> _endSideMenuKey = GlobalKey<SideMenuState>();
@@ -60,13 +64,15 @@ class _NhomeScreenState extends State<NhomeScreen> {
       }
     }
   }
-bool gg=true;
+
+  int gc = -1;int gd=-1;
   Color iconColor = Color.fromARGB(255, 74, 84, 176);
-  List<Products>? h=[];
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+     List<Products>? h = [];
     return SideMenu(
         key: _endSideMenuKey,
         inverse: true,
@@ -149,8 +155,6 @@ bool gg=true;
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => Carts(),
-
-
                                 ),
                               );
                             },
@@ -306,146 +310,194 @@ bool gg=true;
                                       child: CircularProgressIndicator(
                                     color: Color.fromARGB(255, 74, 84, 176),
                                   ));
-                                }
-
-                               else if (state is HomeSucess)
-                                {
+                                } else if (state is HomeSucess) {
                                   h = context
                                       .read<HomeCubit>()
                                       .homeModel
                                       .data
                                       ?.products;
-                                return ListView.builder(
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin:
-                                          EdgeInsets.only(left: height * 0.05),
-                                      padding: EdgeInsets.all(10),
-                                      width: width * 0.5,
-                                      height: height * 0.35,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey[200],
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CachedNetworkImage(
-                                            imageUrl: '${h?[index].image}',
-                                            width: width * 0.4,
-                                            height: height * 0.2,
-                                            placeholder: (context, url) =>
-                                                Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                              color: Color.fromARGB(
-                                                  255, 74, 84, 176),
-                                            )),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
-                                          ),
-                                          SizedBox(
-                                            height: height * 0.02,
-                                          ),
-                                          Row(
+                                  return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: (){
+                                          Datasend.idproduct = index;
+                                          Datasend.idddproduct = h?[index].id as int;
+
+
+                                          fffcart=h![index].inCart!;
+                                          Get.to(DetailsProducthome());
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: height * 0.05),
+                                          padding: EdgeInsets.all(10),
+                                          width: width * 0.5,
+                                          height: height * 0.35,
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                child: IconButton(
-                                                    onPressed: () {},
-                                                    icon: Icon(
-                                                      Icons.favorite_border,
-                                                      color: Colors.black,
-                                                    )),
+                                              CachedNetworkImage(
+                                                imageUrl: '${h?[index].image}',
+                                                width: width * 0.4,
+                                                height: height * 0.2,
+                                                placeholder: (context, url) =>
+                                                    Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                  color: Color.fromARGB(
+                                                      255, 74, 84, 176),
+                                                )),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.02,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundColor: Colors.white,
+                                                    child: IconButton(
+                                                        onPressed: () {},
+                                                        icon: Icon(
+                                                          Icons.favorite_border,
+                                                          color: Colors.black,
+                                                        )),
+                                                  ),
+                                                  Spacer(),
+                                                  BlocBuilder<AddcartCubit,
+                                                      AddcartState>(
+                                                    builder: (context, state) {
+                                                      if (state
+                                                              is AddcartLoading &&
+                                                          gc == index) {
+                                                        return Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                          color: Color.fromARGB(
+                                                              255, 74, 84, 176),
+                                                        ));
+                                                      }
+                                                      if (state
+                                                      is AddcartLoading &&
+                                                          gd == index) {
+                                                        return Center(
+                                                            child:
+                                                            CircularProgressIndicator(
+                                                              color: Color.fromARGB(
+                                                                  255, 74, 84, 176),
+                                                            ));
+                                                      }
+                                                      if (state
+                                                              is AddcartSucces &&
+                                                          gc == index) {
+                                                        h?[index].inCart = true;
+                                                        gc = -1;
+                                                      }
+                                                      if (state
+                                                      is AddcartSucces &&
+                                                          gd == index) {
+                                                        h?[index].inCart = false;
+                                                        gd = -1;
+                                                      }
+
+
+
+
+                                                          return CircleAvatar(
+                                                            backgroundColor: h?[
+                                                                            index]
+                                                                        .inCart ==
+                                                                    true
+                                                                ? Color.fromARGB(
+                                                                    255,
+                                                                    74,
+                                                                    84,
+                                                                    176)
+                                                                : Colors.white,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  // initState();
+                                                                  if (h?[index]
+                                                                          .inCart ==
+                                                                      false) {
+                                                                    gc=index;
+                                                                    context
+                                                                        .read<
+                                                                            AddcartCubit>()
+                                                                        .addcart(
+                                                                            idnumber:
+                                                                                h?[index].id as int);
+                                                                  } else if(h?[index].inCart==true) {
+                                                                    gd=index;
+                                                                    print('*************${(h?[index].id)}');
+                                                                    context
+                                                                        .read<
+                                                                        AddcartCubit>()
+                                                                        .addcart(
+                                                                        idnumber:
+                                                                        h?[index].id as int);
+
+                                                                  }
+                                                                  //h?.clear();
+                                                                  //context.read<HomeCubit>().home();
+                                                                  /*print('******************************${h?[index]
+                                                              .inCart}');*/
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .add_shopping_cart_outlined,
+                                                                  color: h?[index]
+                                                                              .inCart ==
+                                                                          true
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                )),
+                                                          );
+                                                        },
+
+                                                  ),
+                                                ],
                                               ),
                                               Spacer(),
-                                              BlocBuilder<AddcartCubit,
-                                                  AddcartState>(
-                                                builder: (context, state) {
-                                                  if (state is AddcartLoading){
-                                                    gg=false;
-                                                    return Center(
-                                                        child: CircularProgressIndicator(
-                                                          color: Color.fromARGB(255, 74, 84, 176),
-                                                        ));
-                                                  }
-                                                  if(state is AddcartSucces && gg== false){
-                                                    context.read<HomeCubit>().home();
-                                                    h = context
-                                                        .read<HomeCubit>()
-                                                        .homeModel
-                                                        .data
-                                                        ?.products;
-                                                    gg=true;
-                                                  }
-
-
-
-                                                  return CircleAvatar(
-                                                    backgroundColor:
-                                                        h?[index].inCart == true
-                                                            ? Color.fromARGB(
-                                                                255,
-                                                                74,
-                                                                84,
-                                                                176)
-                                                            : Colors.white,
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                         // initState();
-
-                                                        context.read<AddcartCubit>().addcart(idnumber: h?[index].id as int);
-                                                        //h?.clear();
-                                                        //context.read<HomeCubit>().home();
-                                                         /*print('******************************${h?[index]
-                                                            .inCart}');*/
-                                                          },
-                                                        icon: Icon(
-                                                          Icons
-                                                              .add_shopping_cart_outlined,
-                                                          color: h?[index]
-                                                                      .inCart ==true
-
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        )),
-                                                  );
-                                                },
+                                              Text(
+                                                '${h?[index].name}',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 17),
                                               ),
+                                              RichText(
+                                                  text: TextSpan(
+                                                      text: ' EGP ',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12),
+                                                      children: [
+                                                    TextSpan(
+                                                      text: '${h?[index].price}',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )
+                                                  ])),
                                             ],
                                           ),
-                                          Spacer(),
-                                          Text(
-                                            '${h?[index].name}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                          RichText(
-                                              text: TextSpan(
-                                                  text: ' EGP ',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12),
-                                                  children: [
-                                                TextSpan(
-                                                  text: '${h?[index].price}',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ])),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  itemCount: h?.length,
-                                  scrollDirection: Axis.horizontal,
-                                );}
-                                else{
+                                        ),
+                                      );
+                                    },
+                                    itemCount: h?.length,
+                                    scrollDirection: Axis.horizontal,
+                                  );
+                                } else {
                                   return SizedBox.shrink();
                                 }
                               },

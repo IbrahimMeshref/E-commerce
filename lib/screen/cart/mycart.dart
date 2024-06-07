@@ -1,4 +1,6 @@
-import 'dart:math' as math;
+
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:shoe/screen/cart/cubitupdatecaet/updatecart_cubit.dart';
 import 'package:shoe/screen/nhome/cubithome/home_cubit.dart';
 import '../diohelper/diohelper.dart';
 
+import '../nhome/nhomescreen.dart';
 import '../product/cubit/product_cubit.dart';
 import 'cubitgetcaet/getcart_cubit.dart';
 import 'model/ShowCartModel.dart';
@@ -31,13 +34,13 @@ class _CartsState extends State<Carts> {
   String dropdownValue = list.first;
   int weight = 1;
   double tot = 0.0;
-  num sub=0;
-  num total=0.0;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    int j=-1;int jd=-1;
+    int j=-1;int jd=-1;num sub=0;
+    num total=0.0;
     return Scaffold(
       backgroundColor: Color.fromRGBO(247, 247, 247, 1),
       appBar: AppBar(
@@ -54,12 +57,12 @@ class _CartsState extends State<Carts> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                context
+               /* context
                     .read<ProductCubit>()
                     .getproduct();
                 context
                     .read<HomeCubit>()
-                    .home();
+                    .home();*/
 
               },
               child: CircleAvatar(
@@ -83,220 +86,232 @@ class _CartsState extends State<Carts> {
             } else if (state is GetcartSucess) {
 
 
-              var h = context.read<GetcartCubit>().showCartModel.data;
-              total=h!.total!;
-              sub=h.subTotal!;
-              List<CartItems>? cartdata =h.cartItems;
+              var hh = context.read<GetcartCubit>().showCartModel.data;
+              total=hh!.total!;
+              sub=hh.subTotal!;
+              List<CartItems>? cartdata =hh.cartItems;
 
               print('**********************${cartdata?.length}');
-              return ListView.builder(
-                itemCount: cartdata!.length,
+              return BlocBuilder<DeletecartCubit, DeletecartState>(
+  builder: (context, state) {
+    if(state is DeletecartSucces){
+      if (jd !=-1){
+        cartdata?.removeAt(jd);
+        jd=-1;
+
+        context
+            .read<HomeCubit>()
+            .home();
+      }
+      context
+          .read<ProductCubit>()
+          .getproduct();
+    }
+    return ListView.builder(
+                itemCount: cartdata?.length,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: height * 0.27,
-                      width: width * 0.9,
-                      margin: EdgeInsets.only(bottom: height * 0.03),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color.fromARGB(255, 234, 233, 233),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                height: height * 0.17,
-                                margin: EdgeInsets.only(
-                                    top: height * 0.00, left: width * 0.04),
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      '${cartdata[index].product?.image}',
-                                  width: width * 0.35,
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(
-                                    color: Color.fromARGB(255, 74, 84, 176),
-                                  )),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
-                              SizedBox(
-                                height: height * 0.02,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  BlocBuilder<UpdatecartCubit, UpdatecartState>(
-                                    builder: (context, state) {
-                                      if (state is UpdatecartLoading&&j==index) {
+                                  onTap: () {},
+                                  child: Container(
+                                    height: height * 0.27,
+                                    width: width * 0.9,
+                                    margin: EdgeInsets.only(bottom: height * 0.03),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color.fromARGB(255, 234, 233, 233),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              height: height * 0.17,
+                                              margin: EdgeInsets.only(
+                                                  top: height * 0.00, left: width * 0.04),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    '${cartdata?[index].product?.image}',
+                                                width: width * 0.35,
+                                                placeholder: (context, url) => Center(
+                                                    child: CircularProgressIndicator(
+                                                  color: Color.fromARGB(255, 74, 84, 176),
+                                                )),
+                                                errorWidget: (context, url, error) =>
+                                                    Icon(Icons.error),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: height * 0.02,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                BlocBuilder<UpdatecartCubit, UpdatecartState>(
+                                                  builder: (context, state) {
+                                                    if (state is UpdatecartLoading&&j==index) {
 
-                                        return Center(
-                                            child: CircularProgressIndicator(
-                                          color:
-                                              Color.fromARGB(255, 74, 84, 176),
-                                        ));
-                                      }
-                                      else if(state is UpdatecartSucess&&j==index){
-                                        var oo=context.read<UpdatecartCubit>().updateCartModel.data;
-                                        print(index);
-                                        cartdata[index].quantity  =oo?.cart?.quantity;
+                                                      return Center(
+                                                          child: CircularProgressIndicator(
+                                                        color:
+                                                            Color.fromARGB(255, 74, 84, 176),
+                                                      ));
+                                                    }
+                                                    else if(state is UpdatecartSucess&&j==index){
+                                                      var oo=context.read<UpdatecartCubit>().updateCartModel.data;
+                                                      print(index);
+                                                      cartdata?[index].quantity  =oo?.cart?.quantity;
 
-                                        j=-1;
-                                      }
-
-
-                                      return DropdownMenu<String>(
-                                        //enabled: false,
-                                        width: width * 0.2,
-
-                                        onSelected: (String? value) {
-                                          j=index;
-                                          context
-                                              .read<UpdatecartCubit>()
-                                              .updatecart(
-                                                  id: cartdata[index].id
-                                                      as int,
-                                                  quantity: num.parse(
-                                                      value.toString()));
+                                                      j=-1;
+                                                    }
 
 
-                                       //   cartdata?[index].quantity  =context.read<UpdatecartCubit>().updateCartModel.data?.cart?.quantity;
+                                                    return DropdownMenu<String>(
+                                                      //enabled: false,
+                                                      width: width * 0.2,
 
-                                          /* context
-                                              .read<GetcartCubit>()
-                                              .getcart();*/
-                                        },
-
-                                        initialSelection: cartdata[index]
-                                            .quantity
-                                            .toString(),
-                                        dropdownMenuEntries: list
-                                            .map<DropdownMenuEntry<String>>(
-                                                (String value) {
-                                          return DropdownMenuEntry<String>(
-                                              value: value, label: value);
-                                        }).toList(),
-                                      );
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: width * 0.02,
-                                  ),
-                                  BlocBuilder<DeletecartCubit, DeletecartState>(
-                                    builder: (context, state)  {
-                                      if (state is DeletecartLoading&&jd==index) {
-                                        return Center(
-                                            child: CircularProgressIndicator(
-                                          color:
-                                              Color.fromARGB(255, 74, 84, 176),
-                                        ));
-                                      }
-                                      else if(state is DeletecartSucces&&jd==index){
-                                        var od=context.read<DeletecartCubit>().deleteCartModel.data;
-
-                                        print(cartdata.length);
+                                                      onSelected: (String? value) {
+                                                        j=index;
+                                                        context
+                                                            .read<UpdatecartCubit>()
+                                                            .updatecart(
+                                                                id: cartdata?[index].id
+                                                                    as int,
+                                                                quantity: num.parse(
+                                                                    value.toString()));
 
 
-                                        cartdata.removeAt(index);
-                                        print(cartdata.length);
+                                                     //   cartdata?[index].quantity  =context.read<UpdatecartCubit>().updateCartModel.data?.cart?.quantity;
+
+                                                        /* context
+                                                            .read<GetcartCubit>()
+                                                            .getcart();*/
+                                                      },
+
+                                                      initialSelection: cartdata?[index]
+                                                          .quantity
+                                                          .toString(),
+                                                      dropdownMenuEntries: list
+                                                          .map<DropdownMenuEntry<String>>(
+                                                              (String value) {
+                                                        return DropdownMenuEntry<String>(
+                                                            value: value, label: value);
+                                                      }).toList(),
+                                                    );
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  width: width * 0.02,
+                                                ),
+                                                BlocBuilder<DeletecartCubit, DeletecartState>(
+                                                  builder: (context, state)  {
+                                                    if (state is DeletecartLoading&&jd==index) {
+
+                                                      return Center(
+                                                          child: CircularProgressIndicator(
+                                                        color:
+                                                            Color.fromARGB(255, 74, 84, 176),
+                                                      ));
+
+                                                    }
+
+                                                    return CircleAvatar(
+                                                      backgroundColor:
+                                                          Color.fromARGB(255, 234, 233, 233),
+                                                      radius: 25,
+                                                      child: IconButton(
+                                                        iconSize: 30,
+                                                        icon: Icon(CupertinoIcons.delete,
+                                                            color: Colors.grey[600]),
+                                                        onPressed: () {
+                                                          /*context
+                                                              .read<GetcartCubit>()
+                                                              .getcart();*/
+
+                                                          //print(cartdata?.length);
+                                                          jd=index;
+                                                          context
+                                                              .read<DeletecartCubit>()
+                                                              .deletecart(
+                                                                id: cartdata?[index].id
+                                                                    as int,
+                                                              );
 
 
-                                        jd=-1;
-                                      }
-                                      return CircleAvatar(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 234, 233, 233),
-                                        radius: 25,
-                                        child: IconButton(
-                                          iconSize: 30,
-                                          icon: Icon(CupertinoIcons.delete,
-                                              color: Colors.grey[600]),
-                                          onPressed: () {
-                                            /*context
-                                                .read<GetcartCubit>()
-                                                .getcart();*/
-                                            jd=index;
-                                            context
-                                                .read<DeletecartCubit>()
-                                                .deletecart(
-                                                  id: cartdata[index].id
-                                                      as int,
-                                                );
 
-                                          },
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    },
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              top: height * 0.01, left: width * 0.03),
+                                          width: width * 0.5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${cartdata?[index].product?.name}',
+                                                // softWrap: false,
+                                                overflow: TextOverflow.fade,
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w600),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.02,
+                                              ),
+                                              Text(
+                                                'EGP ${(cartdata?[index].product?.price)?.toDouble()}',
+                                                // softWrap: false,
+                                                //overflow:TextOverflow.fade ,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w600),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.01,
+                                              ),
+                                              RichText(
+                                                  text: TextSpan(children: [
+                                                TextSpan(
+                                                  text:
+                                                      'EGP ${(cartdata?[index].product?.oldPrice)?.toDouble()} ',
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration.lineThrough,
+                                                      decorationColor: Colors.grey[700],
+                                                      //decorationStyle: TextDecorationStyle.solid,
+                                                      decorationThickness: 2,
+                                                      color: Colors.grey[700],
+                                                      fontSize: 16),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      ' ${(cartdata?[index].product?.discount)}% OFF',
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontSize: 17,
+                                                      fontWeight: FontWeight.w500),
+                                                )
+                                              ])),
+                                              // SizedBox(height: height*0.02,),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: height * 0.01, left: width * 0.03),
-                            width: width * 0.5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${cartdata[index].product?.name}',
-                                  // softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(
-                                  height: height * 0.02,
-                                ),
-                                Text(
-                                  'EGP ${(cartdata?[index].product?.price)?.toDouble()}',
-                                  // softWrap: false,
-                                  //overflow:TextOverflow.fade ,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(
-                                  height: height * 0.01,
-                                ),
-                                RichText(
-                                    text: TextSpan(children: [
-                                  TextSpan(
-                                    text:
-                                        'EGP ${(cartdata[index].product?.oldPrice)?.toDouble()} ',
-                                    style: TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        decorationColor: Colors.grey[700],
-                                        //decorationStyle: TextDecorationStyle.solid,
-                                        decorationThickness: 2,
-                                        color: Colors.grey[700],
-                                        fontSize: 16),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        ' ${(cartdata[index].product?.discount)}% OFF',
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  )
-                                ])),
-                                // SizedBox(height: height*0.02,),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                                );
                 },
               );
+  },
+);
             } else {
               return SizedBox.shrink();
             }
@@ -312,15 +327,39 @@ class _CartsState extends State<Carts> {
                     vertical: height * 0.02, horizontal: width * 0.04),
                 child: BlocBuilder<GetcartCubit, GetcartState>(
 
-  builder: (context, state) {
 
+  builder: (context, state) {
+    if (state is GetcartSucess) {
+      var hh = context
+          .read<GetcartCubit>()
+          .showCartModel
+          .data;
+      total = hh!.total!;
+      sub = hh.subTotal!;
+    }
     return BlocBuilder<UpdatecartCubit, UpdatecartState>(
 
   builder: (context, state) {
+    if(state is UpdatecartLoading){
+      return Center(
+          child: CircularProgressIndicator(
+            color:
+            Color.fromARGB(255, 74, 84, 176),
+          ));
+    }
      if(state is UpdatecartSucess){
-      var oo=context.read<UpdatecartCubit>().updateCartModel.data;
-      total=oo!.total!;
-      sub=oo.subTotal!;
+      var or=context.read<UpdatecartCubit>().updateCartModel.data;
+      total=or!.total!;
+      sub=or.subTotal!;
+      print('*************#${sub}');
+    }
+    return BlocBuilder<DeletecartCubit, DeletecartState>(
+  builder: (context, state) {
+    if(state is DeletecartSucces){
+      var od=context.read<DeletecartCubit>().deleteCartModel.data;
+      total=od!.total!;
+
+      sub=od.subTotal!;
     }
     return Column(
                   children: [
@@ -380,8 +419,10 @@ class _CartsState extends State<Carts> {
                               fontSize: 18),
                         ),
                         Spacer(),
+
                         Text(
-                          'EGP ${(total.toDouble()) + delivery}',
+
+                          'EGP ${(total.toDouble()) +( sub!=0 ?delivery:0)}',
                           style: TextStyle(
                             color: Color.fromARGB(255, 74, 84, 176),
                             fontSize: 19,
@@ -411,6 +452,8 @@ class _CartsState extends State<Carts> {
                     )
                   ],
                 );
+  },
+);
   },
 );
   },

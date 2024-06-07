@@ -3,26 +3,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:shoe/screen/product/cubit/product_cubit.dart';
-import 'package:shoe/screen/product/model/Productmodel.dart';
-import 'package:shoe/screen/product/product.dart';
 
 import '../cart/cubitaddcart/addcart_cubit.dart';
 import '../cart/mycart.dart';
 import '../diohelper/urlapi.dart';
-import '../nhome/cubithome/home_cubit.dart';
-import '../nhome/nhomescreen.dart';
+import '../product/detialscubit/detilas_cubit.dart';
+import '../product/model/detailsproductmodel.dart';
+import 'cubithome/home_cubit.dart';
+import 'nhomescreen.dart';
 
-class DetailsProduct extends StatefulWidget {
-  const DetailsProduct({super.key});
+class DetailsProducthome extends StatefulWidget {
+  const DetailsProducthome({super.key});
 
   @override
-  State<DetailsProduct> createState() => _DetailsProductState();
+  State<DetailsProducthome> createState() => _DetailsProducthomeState();
+
 }
 
-class _DetailsProductState extends State<DetailsProduct> {
+class _DetailsProducthomeState extends State<DetailsProducthome> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    context.read<DetilasCubit>().detilas(id:Datasend.idddproduct as int);
+  }
+
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -42,7 +49,6 @@ class _DetailsProductState extends State<DetailsProduct> {
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  context.read<ProductCubit>().getproduct();
                 },
                 icon: Icon(
                   Icons.chevron_left,
@@ -54,16 +60,7 @@ class _DetailsProductState extends State<DetailsProduct> {
             ),
           ],
         ),
-        title: Center(
-          child: Text(
-            '${Datasend.namecategory}',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-        ),
+
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
@@ -106,24 +103,21 @@ class _DetailsProductState extends State<DetailsProduct> {
           padding: const EdgeInsets.all(15),
           child: Column(
             children: [
-              BlocBuilder<ProductCubit, ProductState>(
+              BlocBuilder<DetilasCubit, DetilasState>(
                 builder: (context, state) {
-                  if (state is ProductLoading) {
+                  if (state is DetilasLoading) {
                     return Center(
                         child: CircularProgressIndicator(
-                      color: Colors.blueAccent,
-                    ));
-                  } else if (state is ProductSuccess) {
-                    List<ProductData>? dproduct = [];
-                    dproduct =
-                        context.read<ProductCubit>().productmodel.data?.data;
-                    List<String>? images=dproduct?[Datasend.idproduct as int].images;
+                          color: Colors.blueAccent,
+                        ));
+                  } else if (state is DetilasSucces) {
+                    Data? dproductt = context.read<DetilasCubit>().detailsproductmodel.data;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
                         Text(
-                          '${dproduct?[Datasend.idproduct as int].name}',
+                          '${dproductt?.name}',
                           //  overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 23,
@@ -139,29 +133,29 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 14),
                                 children: [
-                              TextSpan(
-                                text:
-                                    '${dproduct?[Datasend.idproduct as int].price}',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ])),
+                                  TextSpan(
+                                    text:
+                                    '${dproductt?.price}',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ])),
                         SizedBox(
                           height: height * 0.03,
                         ),
                         Center(
                           child: CachedNetworkImage(
                             imageUrl:
-                                '${dproduct?[Datasend.idproduct as int].image}',
+                            '${dproductt?.image}',
                             fit: BoxFit.fill,
                             //width: width * 0.4,
                             height: height * 0.4,
                             placeholder: (context, url) => Center(
                                 child: CircularProgressIndicator(
-                              color: Color.fromARGB(255, 74, 84, 176),
-                            )),
+                                  color: Color.fromARGB(255, 74, 84, 176),
+                                )),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),
@@ -177,22 +171,22 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 height: height * 0.15, width: width * 0.35,
                                 //color: Colors.pink,
                                 margin: EdgeInsets.all(10),
-                                 child: CachedNetworkImage(
-                                   imageUrl:
-                                   '${images?[index]}',
-                                   fit: BoxFit.fill,
-                                   //width: width * 0.4,
-                                   height: height * 0.2,
-                                   placeholder: (context, url) => Center(
-                                       child: CircularProgressIndicator(
-                                         color: Color.fromARGB(255, 74, 84, 176),
-                                       )),
-                                   errorWidget: (context, url, error) =>
-                                       Icon(Icons.error),
-                                 ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                  '${dproductt!.images![index]}',
+                                  fit: BoxFit.fill,
+                                  //width: width * 0.4,
+                                  height: height * 0.2,
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(
+                                        color: Color.fromARGB(255, 74, 84, 176),
+                                      )),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                ),
                               );
                             },
-                            itemCount: images?.length,
+                            itemCount: dproductt?.images?.length,
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
 
@@ -211,9 +205,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                           height: height * 0.01,
                         ),
                         Text(
-                          '${dproduct?[Datasend.idproduct as int].description}',
+                          '${dproductt?.description}',
                           style:
-                              TextStyle(fontSize: 20, color: Colors.grey[800]),
+                          TextStyle(fontSize: 20, color: Colors.grey[800]),
                         ),
                       ],
                     );
@@ -229,17 +223,17 @@ class _DetailsProductState extends State<DetailsProduct> {
       bottomNavigationBar: Container(
         height: height * 0.1,
         decoration: BoxDecoration(
-            //color: Color(0xff90A8BE),
+          //color: Color(0xff90A8BE),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))
-            // border: Border(
-            //   top: BorderSide(
-            //     color: Colors.indigo,
-            //     width: 1,
-            //   ),
-            // ),
+          // border: Border(
+          //   top: BorderSide(
+          //     color: Colors.indigo,
+          //     width: 1,
+          //   ),
+          // ),
 
-            ),
+        ),
         child: Row(
           children: [
             SizedBox(
@@ -265,14 +259,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                 if (state is AddcartLoading) {
                   return Center(
                       child: CircularProgressIndicator(
-                    color: Color.fromARGB(255, 74, 84, 176),
-                  ));
-                }else if(state is AddcartSucces){
-                  fffproduct=!fffproduct;
-                  context
-                      .read<HomeCubit>()
-                      .home();
-
+                        color: Color.fromARGB(255, 74, 84, 176),
+                      ));
                 }
 
                 return ElevatedButton(
@@ -280,16 +268,19 @@ class _DetailsProductState extends State<DetailsProduct> {
                     context
                         .read<AddcartCubit>()
                         .addcart(idnumber: Datasend.idddproduct as int);
-
+                    fffcart=!fffcart;
+                    context
+                        .read<HomeCubit>()
+                        .home();
                   },
                   child: Text(
-                      fffproduct?'Add to Cart':'Delete on cart',
+                    fffcart?'Add to Cart':'Delete on cart',
                     style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
                   ),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color.fromARGB(255, 74, 84, 176), shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // <-- Radius
-                    ),
+                    borderRadius: BorderRadius.circular(12), // <-- Radius
+                  ),
                     minimumSize: Size(width * 0.7, height * 0.06),
                     textStyle: TextStyle(
                         color: Colors.white,
