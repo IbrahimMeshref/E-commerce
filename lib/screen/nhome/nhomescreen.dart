@@ -329,7 +329,7 @@ class _NhomeScreenState extends State<NhomeScreen> {
                                         },
                                         child: Container(
                                           margin: EdgeInsets.only(
-                                              left: height * 0.05),
+                                              right: width * 0.02),
                                           padding: EdgeInsets.all(10),
                                           width: width * 0.5,
                                           height: height * 0.35,
